@@ -1,6 +1,6 @@
 namespace Lab5_dotnet;
 
-public class Person : IComparable<Person>
+public class Person
 {
     protected string _firstName = default!;
     protected string _lastName = default!;
@@ -81,10 +81,5 @@ public class Person : IComparable<Person>
     public override int GetHashCode()
     {
         return HashCode.Combine(FirstName, LastName, BirthDate);
-    }
-
-    public int CompareTo(Person person)
-    { 
-        return FirstName.CompareTo(person.FirstName);
     }
 }

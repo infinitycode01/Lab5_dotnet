@@ -2,7 +2,17 @@ namespace Lab5_dotnet;
 
 public class StudentCollection
 {
+    public string CollectionName { get; init; }
     private List<Student> _students = new List<Student>();
+    
+    public delegate void StudentListHandler(object source, StudentListHandlerEventArgs args);
+    public event StudentListHandler ?StudentCountChanged;
+    public event StudentListHandler ?StudentReferenceChanged;
+
+    public StudentCollection(string collectionName)
+    {
+        CollectionName = collectionName;
+    }
 
     public List<Student> Students
     {
@@ -34,13 +44,20 @@ public class StudentCollection
     {
         for (int i = 0; i < 3; i++)
         {
-            Students.Add(new Student());
+            Student student = new();
+            Students.Add(student);
+            StudentCountChanged?.Invoke(this, new StudentListHandlerEventArgs(CollectionName, "Add", student));
         }
     }
 
     public void AddStudents(Student[] students)
     {
-        _students.AddRange(students);
+        foreach (Student student in students)
+        {
+            Students.Add(student);
+            StudentCountChanged?.Invoke(this, new StudentListHandlerEventArgs(CollectionName, "Add", student));
+        }
+
     }
 
     public override string ToString()
@@ -95,5 +112,47 @@ public class StudentCollection
     public List<Student> AverageMarkGroup(double value)
     {
         return Students.Where(student => student.AverageGrade == value).ToList();
+    }
+
+    public bool Remove(int j)
+    {
+        if (j >= 0 && j < Students.Count)
+        {
+            var studentRef = Students[j];
+            Students.RemoveAt(j);
+            StudentCountChanged?.Invoke(this, new StudentListHandlerEventArgs(CollectionName, "Remove", studentRef));
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public Student this[int index]
+    {
+        get 
+        {
+            if (index >= 0 && index < Students.Count)
+            {
+                return Students[index];
+            }
+            else
+            {
+                throw new IndexOutOfRangeException($"Index {index} is out of range.");
+            }
+        }
+        set 
+        {
+            if (index >= 0 && index < Students.Count)
+            {
+                Students[index] = value;
+                StudentReferenceChanged?.Invoke(this, new StudentListHandlerEventArgs(CollectionName, "Update", value));
+            }
+            else
+            {
+                throw new IndexOutOfRangeException($"Index {index} is out of range.");
+            }
+        }
     }
 }

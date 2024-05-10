@@ -28,7 +28,7 @@ public class Student: Person, IComparable<Student>
     public Person StudentData
     {
         get { return this; }
-        init 
+        set 
         {
             FirstName = value.FirstName;
             LastName = value.LastName;
@@ -39,13 +39,13 @@ public class Student: Person, IComparable<Student>
     public Education EducationForm
     {
         get { return _educationForm; }
-        init { _educationForm = value; }
+        set { _educationForm = value; }
     }
 
     public int GroupNumber
     {
         get { return _groupNumber; }
-        init 
+        set 
         {
             if (value <= 100 || value > 699)
             {
